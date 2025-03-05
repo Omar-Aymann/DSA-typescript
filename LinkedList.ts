@@ -1,48 +1,65 @@
+class ListItem<T> {
+  public data: T;
+  public next: ListItem<T> | null = null;
+
+  constructor(data: T) {
+    this.data = data;
+  }
+}
+
 class LinkedList<T> {
-    private head : ListNode<T> | null;
+  public top: ListItem<T> | null = null;
 
-    constructor(head: ListNode<T> | null) {
-        this.head = head;
+  constructor(top: ListItem<T> | null = null) {
+    this.top = top;
+  }
+
+  printList() {
+    let current = this.top; // Use a local variable instead of modifying `top`
+    while (current !== null && current?.next !== null) {
+      console.log(current.next.data);
+      current = current.next;
     }
-    public add(value : T) {
-        const node : ListNode<T> = new ListNode<T>(value, null);
-        if(!this.head) {
-            this.head = node;
-        } else {
-            let current = this.head;
-            while(current.next) {
-                current = current.next;
-            }
-            current.next = node;
-        }
+  }
+
+  addToEnd(item: ListItem<T>) {
+    if (!this.top) {
+      this.top = item;
+      return;
     }
-    public remove() {
-        if(this.head) {
-            this.head  = this.head.next;
-        }
+
+    let current = this.top;
+    while (current.next !== null) {
+      current = current.next;
     }
-    public display() {
-        if(this.head) {
-            let current : ListNode<T> | null = this.head;
-            while(current != null) {
-                console.log(current.value);
-                current = current.next;
-            }
-        }
-    }
-    
+    current.next = item;
+  }
+
+  addToStart(item: ListItem<T>) {
+    if (!this.top) return;
+
+    item.next = this.top.next;
+    this.top.next = item;
+  }
 }
 
-class ListNode<T> {
-    public value : T;
-    public next : ListNode<T> | null;
-    constructor(value : T, next : ListNode<T> | null) {
-        this.value = value;
-        this.next = next;
-    }
-}
-const list : LinkedList<number> = new LinkedList<number>(null);
-list.add(5);
-list.add(2);
-list.add(4);
-list.display();
+// Creating the linked list
+const sentinel = new ListItem<string>(""); // Dummy head
+const item1 = new ListItem<string>("Omar");
+const item2 = new ListItem<string>("Ayman");
+const item3 = new ListItem<string>("Negm");
+const item4 = new ListItem<string>("Hello");
+
+// Linking nodes
+sentinel.next = item1;
+item1.next = item2;
+
+const list1 = new LinkedList<string>(sentinel);
+list1.printList(); // Expected output: Omar, Ayman
+list1.addToEnd(item3);
+console.log("*****************");
+list1.printList(); // Expected output: Omar, Ayman, Negm
+console.log("*****************");
+list1.addToStart(item4);
+console.log("*****************");
+list1.printList(); // Expected output: Omar, Ayman, Negm
